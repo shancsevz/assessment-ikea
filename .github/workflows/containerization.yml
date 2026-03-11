@@ -31,6 +31,35 @@ jobs:
         run: chmod +x mvnw
       - name: Compile project
         run: ./mvnw clean compile
+  test:
+    runs-on: ubuntu-latest
+    name: Test app
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Setup JDK
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'corretto'
+      - name: Cache Maven packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+      - name: Give execute permission to mvnw
+        run: chmod +x mvnw
+      - name: Run Tests
+        run: ./mvnw clean test
+      - name: Upload test report
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: target/surefire-reports
   build:
     runs-on: ubuntu-latest
     name: Build app
@@ -97,10 +126,10 @@ jobs:
           context: .
           push: true
           tags: |
-            ${{ secrets.DOCKERHUB_USERNAME }}/myapp-api:${{steps.extract_version.outputs.VERSION}}
-            ${{ secrets.DOCKERHUB_USERNAME }}/myapp-api:latest
+            ${{ secrets.DOCKERHUB_USERNAME }}/ikea-api:${{steps.extract_version.outputs.VERSION}}
+            ${{ secrets.DOCKERHUB_USERNAME }}/ikea-api:latest
           build-args: |
             PROFILE:dev
             APP_VERSION:${{steps.extract_version.outputs.VERSION}}
-          cache-from: type=registry,ref=${{ secrets.DOCKERHUB_USERNAME }}/myapp:buildcache
-          cache-to: type=registry,ref=${{ secrets.DOCKERHUB_USERNAME }}/myapp:buildcache,mode=max
+          cache-from: type=registry,ref=${{ secrets.DOCKERHUB_USERNAME }}/ikea:buildcache
+          cache-to: type=registry,ref=${{ secrets.DOCKERHUB_USERNAME }}/ikea:buildcache,mode=max
