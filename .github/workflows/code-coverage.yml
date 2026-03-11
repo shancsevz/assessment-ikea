@@ -19,7 +19,9 @@ jobs:
           java-version: 17
           distribution: 'temurin'
       - name: Run Coverage
-        run: ./mvnw clean test jacoco:report
+        run: |
+          chmod +x ./mvnw
+          ./mvnw clean test jacoco:report
 
       - name: Add coverage to PR
         id: jacoco
