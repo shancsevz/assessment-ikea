@@ -1,4 +1,4 @@
-name: Ikea CI CD pipeline
+name: Ikea CI pipeline
 on:
   push:
     branches:
