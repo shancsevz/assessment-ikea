@@ -45,10 +45,15 @@ public class ReplaceWarehouseUseCase implements ReplaceWarehouseOperation {
               "Warehouse stock exceeds warehouse capacity (" + newWarehouse.capacity + ")");
     }
 
+    if(existing.archivedAt != null) {
+      throw new IllegalArgumentException(
+              "Warehouse with business unit code '" + newWarehouse.businessUnitCode + "' is archived and cannot be replaced");
+    }
+
     existing.location = newWarehouse.location;
     existing.capacity = newWarehouse.capacity;
     existing.stock = newWarehouse.stock;
 
-    warehouseStore.update(newWarehouse);
+    warehouseStore.update(existing);
   }
 }

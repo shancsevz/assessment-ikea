@@ -24,38 +24,46 @@ public class CreateWarehouseUseCase implements CreateWarehouseOperation {
 
   @Override
   public void create(Warehouse warehouse) {
-
     //Task-3.1 :: Business Unit Code Verification
-    Warehouse isWHExist = warehouseStore.findByBusinessUnitCode(warehouse.businessUnitCode);
-    if (isWHExist != null) {
+    Warehouse existing = warehouseStore.findByBusinessUnitCode(warehouse.businessUnitCode);
+    if (existing != null) {
       throw new IllegalArgumentException(
-              "Warehouse already exists for '" + warehouse.businessUnitCode);
+              "Warehouse with business unit code '" + warehouse.businessUnitCode + "' already exists");
     }
 
     //Task-3.2 :: Location Validation
-    Location isLocExist = locationResolver.resolveByIdentifier(warehouse.location);
-    if (isLocExist == null) {
+    Location location = locationResolver.resolveByIdentifier(warehouse.location);
+    if (location == null) {
       throw new IllegalArgumentException(
-              "Location not valid for '" + warehouse.location);
+              "Location '" + warehouse.location + "' is not valid");
     }
 
     //Task-3.3 :: Warehouse Creation Feasibility
-    if (warehouse.capacity > isLocExist.maxCapacity) {
-      throw new IllegalArgumentException( "Warehouse maximum number of warehouses has already been reached (" + isLocExist.maxCapacity + ")");
+    if (warehouse.capacity > location.maxCapacity) {
+      throw new IllegalArgumentException(
+              "Warehouse capacity (" + warehouse.capacity +
+                      ") exceeds location max capacity (" + location.maxCapacity + ")");
     }
 
     //Task-3.4 :: Capacity and Stock Validation
     if (warehouse.stock > warehouse.capacity) {
-      throw new IllegalArgumentException("The maximum capacity exceeds warehouse capacity(" + warehouse.capacity + ")");
+      throw new IllegalArgumentException(
+              "Warehouse stock (" + warehouse.stock +
+                      ") exceeds warehouse capacity (" + warehouse.capacity + ")");
     }
 
 //Task-Bonus-1 ::Each Product can be fulfilled by a maximum of 2 different Warehouses per Store
-    List<Warehouse> allWarehouse = warehouseStore.getAll();
+    if (warehouse.stock > warehouse.capacity) {
+      throw new IllegalArgumentException(
+              "Warehouse stock (" + warehouse.stock +
+                      ") exceeds warehouse capacity (" + warehouse.capacity + ")");
+    }
 
+    // Set creation timestamp
+    warehouse.createdAt = java.time.LocalDateTime.now();
 
-    warehouse.createdAt = LocalDateTime.now();
-
-    // if all went well, create the warehouse
+    // All validations passed, create the warehouse
     warehouseStore.create(warehouse);
   }
+
 }
