@@ -37,7 +37,7 @@ jobs:
         uses: jeantessier/code-coverage-summary-action@v1
 
       - name: Generate Jacoco Badge
-        id: jacoco
+        id: jacocobadge
         uses: cicirello/jacoco-badge-generator@v2
         with:
           badges-directory: badges
