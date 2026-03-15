@@ -16,6 +16,7 @@ Idempotent, how well APIs are designed, handling of rollbacks, Real-time dashboa
 **Result**: Once we build the right architecture with all kind of fallback and rollbacks, we can have a real-time cost tracking 
 system which will give us the right info to make the right decision on time and also we can have a better cost control 
 and optimization strategy in place. 
+
 ----
 ## Scenario 2: Cost Optimization Strategies
 **Situation**: The company wants to identify and implement cost optimization strategies for its fulfillment operations. The goal is to reduce overall costs without compromising service quality.
